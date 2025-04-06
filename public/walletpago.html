@@ -1,1 +1,40 @@
-walletpago.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recargar USDT</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Recargar USDT</h1>
+        <p>Por favor, realiza un envío de 20, 35 o 45 USDT a la siguiente wallet BEP20:</p>
+        <p><strong>Wallet BEP20:</strong> 0xcfd21d81f589705a74ef0db1ea2a5d69aa46a4ce</p>
+    </header>
+
+    <div id="wallet-info">
+        <h2>Opciones de Recarga</h2>
+        <p>Selecciona la cantidad de USDT que deseas enviar:</p>
+        <ul>
+            <li><button id="send20">Enviar 20 USDT</button></li>
+            <li><button id="send35">Enviar 35 USDT</button></li>
+            <li><button id="send45">Enviar 45 USDT</button></li>
+        </ul>
+        
+        <p><strong>Importante:</strong> Una vez hayas enviado el dinero a la wallet, por favor envía el comprobante de pago.</p>
+        <button onclick="window.location.href='deposit.html'">Enviar Comprobante</button>
+    </div>
+
+    <script>
+        // Función que muestra alerta de confirmación y redirige
+        function handleDeposit(amount) {
+            alert(`Por favor, envía ${amount} USDT a la wallet indicada. Después podrás enviar tu comprobante.`);
+        }
+
+        document.getElementById('send20').addEventListener('click', () => handleDeposit(20));
+        document.getElementById('send35').addEventListener('click', () => handleDeposit(35));
+        document.getElementById('send45').addEventListener('click', () => handleDeposit(45));
+    </script>
+</body>
+</html>
