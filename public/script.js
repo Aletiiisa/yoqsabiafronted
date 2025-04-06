@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
+            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
