@@ -8,15 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // Obtener el valor del campo "username" en lugar de email
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
@@ -37,15 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            // Obtener el valor del campo "username"
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
@@ -60,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Mostrar el saldo y nombre del usuario en el dashboard
+    // Mostrar el saldo y username en el dashboard
     if (window.location.pathname.includes("dashboard.html")) {
         (async () => {
             const token = localStorage.getItem("authToken");
@@ -69,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Se hace la petición a la ruta que devuelve los datos del usuario (por ejemplo, /api/auth/me)
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -100,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Usamos la misma ruta /api/balance para obtener el saldo
         const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
             headers: {
                 'Authorization': `Bearer ${token}`
