@@ -3,12 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
     const depositForm = document.getElementById("depositForm");
 
-    // Función de login
+    // Función de login (usando username y password)
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById("email").value;
+            // Obtener el valor del campo "username" en lugar de email
+            const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ username, password })
             });
 
             const data = await response.json();
@@ -31,13 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Función de registro
+    // Función de registro (usando username y password)
     if (registerForm) {
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
+            // Obtener el valor del campo "username"
+            const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({ username, password })
             });
 
             const data = await response.json();
@@ -68,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Se hace la petición a la ruta que devuelve los datos del usuario (por ejemplo, /api/auth/me)
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -81,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = document.getElementById("userName");
 
                 if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
-                if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
+                if (nameEl) nameEl.textContent = `Bienvenido, ${data.username}`;
             } else {
                 alert("Error: " + data.message);
                 window.location.href = 'login.html';
@@ -89,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })();
     }
 
-    // Comprar programas
+    // Función para comprar programas
     async function buyProgram(programCost) {
         const token = localStorage.getItem("authToken");
 
