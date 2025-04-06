@@ -167,7 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: formData
                 });
 
-                const data = await response.json();
+                const contentType = response.headers.get("Content-Type");
+                let data;
+                if (contentType && contentType.includes("application/json")) {
+                    data = await response.json();
+                } else {
+                    const errorText = await response.text();
+                    alert(`Error al subir comprobante: ${errorText}`);
+                    return;
+                }
 
                 if (response.ok) {
                     alert("Comprobante subido correctamente. Espera a que sea aprobado.");
