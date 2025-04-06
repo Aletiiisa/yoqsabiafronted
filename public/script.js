@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Mostrar el saldo y username en el dashboard
+    // Mostrar el saldo y nombre del usuario en el dashboard
     if (window.location.pathname.includes("dashboard.html")) {
         (async () => {
             const token = localStorage.getItem("authToken");
@@ -76,9 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = document.getElementById("userName");
 
                 if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
-                if (nameEl) nameEl.textContent = `Bienvenido, ${data.username}`;
+                // Como tu endpoint devuelve "name", lo usamos para mostrar el usuario
+                if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
             } else {
-                alert("Error: " + data.message);
+                alert("Error: " + (data.msg || "Error desconocido"));
                 window.location.href = 'login.html';
             }
         })();
