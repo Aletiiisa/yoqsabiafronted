@@ -11,20 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                alert("Login exitoso");
-                localStorage.setItem("authToken", data.token);
-                window.location.href = 'dashboard.html';
-            } else {
-                alert("Error: " + data.message);
+                if (response.ok) {
+                    alert("Login exitoso");
+                    localStorage.setItem("authToken", data.token);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error en el login:", error);
+                alert("Hubo un problema al intentar iniciar sesión.");
             }
         });
     }
@@ -37,19 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                alert("Registro exitoso, por favor inicia sesión.");
-                window.location.href = 'login.html';
-            } else {
-                alert("Error: " + data.message);
+                if (response.ok) {
+                    alert("Registro exitoso, por favor inicia sesión.");
+                    window.location.href = 'login.html';
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error en el registro:", error);
+                alert("Hubo un problema al intentar registrarte.");
             }
         });
     }
@@ -63,24 +73,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Obtener tanto el saldo como el nombre del usuario
-            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            try {
+                const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const balanceEl = document.getElementById("userBalance");
+                    const nameEl = document.getElementById("userName");
+
+                    if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
+                    if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
+                } else {
+                    alert("Error: " + (data.msg || "Error desconocido"));
+                    window.location.href = 'login.html';
                 }
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                const balanceEl = document.getElementById("userBalance");
-                const nameEl = document.getElementById("userName");
-
-                if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
-                if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
-            } else {
-                alert("Error: " + (data.msg || "Error desconocido"));
-                window.location.href = 'login.html';
+            } catch (error) {
+                console.error("Error al obtener datos del usuario:", error);
+                alert("Hubo un problema al obtener la información del usuario.");
             }
         })();
     }
@@ -94,19 +106,23 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Usamos la misma ruta /api/balance para obtener el saldo
-        const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        try {
+            const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.balance >= programCost) {
+                alert(`Compra exitosa de Programa por ${programCost} USDT.`);
+            } else {
+                alert("No tienes suficiente saldo para comprar este programa.");
             }
-        });
-
-        const data = await response.json();
-
-        if (data.balance >= programCost) {
-            alert(`Compra exitosa de Programa por ${programCost} USDT.`);
-        } else {
-            alert("No tienes suficiente saldo para comprar este programa.");
+        } catch (error) {
+            console.error("Error al comprar programa:", error);
+            alert("Hubo un problema al intentar realizar la compra.");
         }
     }
 
@@ -142,20 +158,25 @@ document.addEventListener("DOMContentLoaded", () => {
             formData.append("transactionId", transactionId);
             formData.append("file", file);
 
-            const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
+            try {
+                const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (response.ok) {
-                alert("Comprobante subido correctamente. Espera a que sea aprobado.");
-            } else {
-                alert("Error: " + data.message);
+                if (response.ok) {
+                    alert("Comprobante subido correctamente. Espera a que sea aprobado.");
+                } else {
+                    alert("Error: " + data.message);
+                }
+            } catch (error) {
+                console.error("Error al subir comprobante:", error);
+                alert("Hubo un problema al intentar subir el comprobante.");
             }
         });
     }
