@@ -63,6 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Obtener tanto el saldo como el nombre del usuario
             const response = await fetch('https://backendnose-production.up.railway.app/api/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
