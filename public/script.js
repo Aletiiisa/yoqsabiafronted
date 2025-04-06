@@ -1,152 +1,165 @@
-// Función de login
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const depositForm = document.getElementById("depositForm");
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    // Función de login
+    if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    });
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-    const data = await response.json();
+            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-    if (response.ok) {
-        alert("Login exitoso");
-        // Guardar token en localStorage
-        localStorage.setItem("authToken", data.token);
-        window.location.href = 'dashboard.html';
-    } else {
-        alert("Error: " + data.message);
-    }
-});
+            const data = await response.json();
 
-// Función de registro
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        alert("Registro exitoso, por favor inicia sesión.");
-        window.location.href = 'login.html';
-    } else {
-        alert("Error: " + data.message);
-    }
-});
-
-// Mostrar el saldo y nombre del usuario en el dashboard
-window.onload = async () => {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-        window.location.href = 'login.html';
+            if (response.ok) {
+                alert("Login exitoso");
+                localStorage.setItem("authToken", data.token);
+                window.location.href = 'dashboard.html';
+            } else {
+                alert("Error: " + data.message);
+            }
+        });
     }
 
-    const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
-        headers: {
-            'Authorization': `Bearer ${token}`
+    // Función de registro
+    if (registerForm) {
+        registerForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            const response = await fetch('https://backendnose-production.up.railway.app/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Registro exitoso, por favor inicia sesión.");
+                window.location.href = 'login.html';
+            } else {
+                alert("Error: " + data.message);
+            }
+        });
+    }
+
+    // Mostrar el saldo y nombre del usuario en el dashboard
+    if (window.location.pathname.includes("dashboard.html")) {
+        (async () => {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                const balanceEl = document.getElementById("userBalance");
+                const nameEl = document.getElementById("userName");
+
+                if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
+                if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
+            } else {
+                alert("Error: " + data.message);
+                window.location.href = 'login.html';
+            }
+        })();
+    }
+
+    // Comprar programas
+    async function buyProgram(programCost) {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            alert("Por favor, inicia sesión para realizar una compra.");
+            return;
         }
-    });
 
-    const data = await response.json();
+        const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-    if (response.ok) {
-        // Mostrar el saldo
-        document.getElementById("userBalance").textContent = `${data.balance} USDT`;
+        const data = await response.json();
 
-        // Mostrar el nombre del usuario
-        document.getElementById("userName").textContent = `Bienvenido, ${data.name}`;
-
-        // Puedes agregar más lógica si deseas mostrar otros datos del usuario, como el correo
-    } else {
-        alert("Error: " + data.message);
-        window.location.href = 'login.html';
-    }
-};
-
-// Función para comprar programas en la tienda
-async function buyProgram(programCost) {
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-        alert("Por favor, inicia sesión para realizar una compra.");
-        return;
-    }
-
-    const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
-        headers: {
-            'Authorization': `Bearer ${token}`
+        if (data.balance >= programCost) {
+            alert(`Compra exitosa de Programa por ${programCost} USDT.`);
+        } else {
+            alert("No tienes suficiente saldo para comprar este programa.");
         }
-    });
-
-    const data = await response.json();
-
-    if (data.balance >= programCost) {
-        // Si el saldo es suficiente, realizar la compra
-        alert(`Compra exitosa de Programa ${programCost} USDT.`);
-    } else {
-        // Si no tiene saldo suficiente
-        alert("No tienes suficiente saldo para comprar este programa.");
-    }
-}
-
-// Asignar eventos de compra de programas en la tienda
-document.getElementById("buyProgram1").addEventListener("click", () => buyProgram(20));
-document.getElementById("buyProgram2").addEventListener("click", () => buyProgram(35));
-document.getElementById("buyProgram3").addEventListener("click", () => buyProgram(45));
-
-// Función para subir el comprobante de pago
-document.getElementById("depositForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const token = localStorage.getItem("authToken");
-
-    if (!token) {
-        alert("Por favor, inicia sesión para realizar un depósito.");
-        return;
     }
 
-    const transactionId = document.getElementById("transactionId").value;
-    const file = document.getElementById("file").files[0];
+    // Eventos para botones de compra
+    const btn1 = document.getElementById("buyProgram1");
+    const btn2 = document.getElementById("buyProgram2");
+    const btn3 = document.getElementById("buyProgram3");
 
-    if (!file) {
-        alert("Por favor, selecciona un archivo.");
-        return;
-    }
+    if (btn1) btn1.addEventListener("click", () => buyProgram(20));
+    if (btn2) btn2.addEventListener("click", () => buyProgram(35));
+    if (btn3) btn3.addEventListener("click", () => buyProgram(45));
 
-    const formData = new FormData();
-    formData.append("transactionId", transactionId);
-    formData.append("file", file);
+    // Subir comprobante de pago
+    if (depositForm) {
+        depositForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-        body: formData
-    });
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                alert("Por favor, inicia sesión para realizar un depósito.");
+                return;
+            }
 
-    const data = await response.json();
+            const transactionId = document.getElementById("transactionId").value;
+            const file = document.getElementById("file").files[0];
 
-    if (response.ok) {
-        alert("Comprobante subido correctamente. Espera a que sea aprobado.");
-    } else {
-        alert("Error: " + data.message);
+            if (!file) {
+                alert("Por favor, selecciona un archivo.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("transactionId", transactionId);
+            formData.append("file", file);
+
+            const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Comprobante subido correctamente. Espera a que sea aprobado.");
+            } else {
+                alert("Error: " + data.message);
+            }
+        });
     }
 });
