@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = document.getElementById("userName");
 
                 if (balanceEl) balanceEl.textContent = `${data.balance} USDT`;
-                // Como tu endpoint devuelve "name", lo usamos para mostrar el usuario
                 if (nameEl) nameEl.textContent = `Bienvenido, ${data.name}`;
             } else {
                 alert("Error: " + (data.msg || "Error desconocido"));
@@ -133,8 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const transactionId = document.getElementById("transactionId").value;
             const file = document.getElementById("file").files[0];
 
-            if (!file) {
-                alert("Por favor, selecciona un archivo.");
+            if (!transactionId || !file) {
+                alert("Por favor, ingresa el ID de transacción y selecciona un archivo.");
                 return;
             }
 
