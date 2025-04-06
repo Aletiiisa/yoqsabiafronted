@@ -3,14 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
     <header>
-        <h1>Bienvenido a nuestra plataforma</h1>
-        <p>Regístrate o inicia sesión para comenzar.</p>
-        <a href="login.html">Iniciar sesión</a> | <a href="register.html">Registrarse</a>
+        <h1>Bienvenido al Dashboard</h1>
+        <p>Correo: <span id="userName">Cargando...</span></p>
+        <p>Saldo: <span id="userBalance">0 USDT</span></p>
+        <button id="logOutButton">Cerrar sesión</button>
     </header>
+
+    <!-- Tienda -->
+    <div id="store">
+        <h2>Tienda</h2>
+        <button id="program1Button">Comprar Programa 1 (20 USDT)</button>
+        <button id="program2Button">Comprar Programa 2 (35 USDT)</button>
+        <button id="program3Button">Comprar Programa 3 (45 USDT)</button>
+    </div>
+
+    <!-- Apartado de Recarga de USDT -->
+    <div id="recargar-usdt">
+        <h3>Recargar saldo</h3>
+        <button onclick="window.location.href='walletpago.html'">Recargar saldo</button>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
