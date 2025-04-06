@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir comprobante de pago</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Subir comprobante de pago</h1>
+        <p>Por favor, sube el comprobante de pago para procesar tu depósito.</p>
+    </header>
+
+    <form id="depositForm">
+        <label for="transactionId">ID de transacción</label>
+        <input type="text" id="transactionId" required>
+        
+        <label for="file">Selecciona el archivo del comprobante</label>
+        <input type="file" id="file" required>
+        
+        <button type="submit">Subir comprobante</button>
+    </form>
+
+    <script src="/public/script.js"></script>
+</body>
+</html>
