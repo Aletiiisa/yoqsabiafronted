@@ -1,48 +1,9 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-    const depositForm = document.getElementById("depositForm");
-
-    // Función de depósito (usando ID de transacción)
-    if (depositForm) {
-        depositForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const transactionId = document.getElementById("transactionId").value;
-            const token = localStorage.getItem("authToken");
-
-            if (!token) {
-                alert("Por favor, inicia sesión primero.");
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Enviar el ID de transacción al backend
-            try {
-                const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    },
-                    body: JSON.stringify({ transactionId })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert("Depósito enviado exitosamente. Esperando aprobación.");
-                    window.location.href = 'dashboard.html'; // Redirigir al dashboard
-                } else {
-                    alert("Error: " + data.message);
-                }
-            } catch (error) {
-                console.error("Error al procesar el depósito:", error);
-                alert("Hubo un problema al procesar tu depósito.");
-            }
-        });
-    }
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
 
     // Función de login (usando username y password)
-    const loginForm = document.getElementById("loginForm");
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -74,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Función de registro (usando username y password)
-    const registerForm = document.getElementById("registerForm");
     if (registerForm) {
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
