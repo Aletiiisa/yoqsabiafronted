@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
-    const depositForm = document.getElementById("depositForm");
 
     // Función de login (usando username y password)
     if (loginForm) {
@@ -95,97 +94,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Hubo un problema al obtener la información del usuario.");
             }
         })();
-    }
-
-    // Función para comprar programas
-    async function buyProgram(programCost) {
-        const token = localStorage.getItem("authToken");
-
-        if (!token) {
-            alert("Por favor, inicia sesión para realizar una compra.");
-            return;
-        }
-
-        try {
-            const response = await fetch('https://backendnose-production.up.railway.app/api/balance', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            const data = await response.json();
-
-            if (data.balance >= programCost) {
-                alert(`Compra exitosa de Programa por ${programCost} USDT.`);
-            } else {
-                alert("No tienes suficiente saldo para comprar este programa.");
-            }
-        } catch (error) {
-            console.error("Error al comprar programa:", error);
-            alert("Hubo un problema al intentar realizar la compra.");
-        }
-    }
-
-    // Eventos para botones de compra
-    const btn1 = document.getElementById("buyProgram1");
-    const btn2 = document.getElementById("buyProgram2");
-    const btn3 = document.getElementById("buyProgram3");
-
-    if (btn1) btn1.addEventListener("click", () => buyProgram(20));
-    if (btn2) btn2.addEventListener("click", () => buyProgram(35));
-    if (btn3) btn3.addEventListener("click", () => buyProgram(45));
-
-    // Subir comprobante de pago
-    if (depositForm) {
-        depositForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const token = localStorage.getItem("authToken");
-            if (!token) {
-                alert("Por favor, inicia sesión para realizar un depósito.");
-                return;
-            }
-
-            const transactionId = document.getElementById("transactionId").value;
-            const file = document.getElementById("file").files[0];
-
-            if (!transactionId || !file) {
-                alert("Por favor, ingresa el ID de transacción y selecciona un archivo.");
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("transactionId", transactionId);
-            formData.append("file", file);
-
-            try {
-                const response = await fetch('https://backendnose-production.up.railway.app/api/deposit', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData
-                });
-
-                const contentType = response.headers.get("Content-Type");
-                let data;
-                if (contentType && contentType.includes("application/json")) {
-                    data = await response.json();
-                } else {
-                    const errorText = await response.text();
-                    alert(`Error al subir comprobante: ${errorText}`);
-                    return;
-                }
-
-                if (response.ok) {
-                    alert("Comprobante subido correctamente. Espera a que sea aprobado.");
-                } else {
-                    alert("Error: " + data.message);
-                }
-            } catch (error) {
-                console.error("Error al subir comprobante:", error);
-                alert("Hubo un problema al intentar subir el comprobante.");
-            }
-        });
     }
 });
